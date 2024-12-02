@@ -36,7 +36,8 @@ public class Parser {
     }
 
     // Return the jump field of a C_COMMAND
-    public String jump(){
+    public String jump()
+    {
         return null;
     }
 }

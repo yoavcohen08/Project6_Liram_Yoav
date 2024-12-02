@@ -1,7 +1,8 @@
 public class Code {
 
     // Translate a dest mnemonic into its binary representation
-    public static String dest(String mnemonic){
+    public static String dest(String mnemonic)
+    {
         return mnemonic;
     }
 
