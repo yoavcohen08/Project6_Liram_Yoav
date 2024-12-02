@@ -18,7 +18,7 @@ public class Code {
 
     // Translate a dest into its binary representation
     public static String dest(String str) {
-        if (str == null) {
+        if (str == "") {
             return "000";
         }
         return MapDest.get(str);
@@ -26,7 +26,7 @@ public class Code {
 
     // Translate a comp into its binary representation
     public static String comp(String str) {
-        if (str == null) {
+        if (str == "") {
             return "0000000";
         }
         return MapComp.get(str);
@@ -34,7 +34,7 @@ public class Code {
 
     // Translate a jump into its binary representation
     public static String jump(String str) {
-        if (str == null) {
+        if (str == "") {
             return "000";
         }
         return MapJump.get(str);
@@ -50,6 +50,7 @@ public class Code {
         MapDest.put("AM", "101");
         MapDest.put("AD", "110");
         MapDest.put("ADM", "111");
+        MapDest.put("MD", "011");
     }
 
     // Initialize comp
@@ -96,17 +97,4 @@ public class Code {
         MapJump.put("JMP", "111");
     }
 
-    public static void main(String[] args) {
-        System.out.println("Dest 'D': " + dest("D")); // Expected: 010
-        System.out.println("Dest 'ADM': " + dest("ADM")); // Expected: 111
-        System.out.println("Dest 'XYZ' (invalid): " + dest("XYZ")); // Expected: 000
-
-        System.out.println("Comp 'D+A': " + comp("D+A")); // Expected: 0000010
-        System.out.println("Comp '!M': " + comp("!M")); // Expected: 1110001
-        System.out.println("Comp 'XYZ' (invalid): " + comp("XYZ")); // Expected: 0000000
-
-        System.out.println("Jump 'JGT': " + jump("JGT")); // Expected: 001
-        System.out.println("Jump 'JLE': " + jump("JLE")); // Expected: 110
-        System.out.println("Jump 'XYZ' (invalid): " + jump("XYZ")); // Expected: 000
-    }
 }

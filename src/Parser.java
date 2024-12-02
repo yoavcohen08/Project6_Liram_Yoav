@@ -1,40 +1,28 @@
 
-import java.io.IOException;
+
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+
 
 
 public class Parser 
 {
     private File filesource;
-    private File filetarget;
     private Scanner readsourcefile;
-    private FileWriter writetagetbuffer;
     private String line;
     private int coutner;
 
     // Constructor
-    public Parser(String inputFilePath) throws FileNotFoundException
+    public Parser(File filesource) throws FileNotFoundException
     {
-        this.filesource = new File(inputFilePath);
+        this.filesource = filesource;
         this.readsourcefile = new Scanner((this.filesource));
-        String name = filesource.getName();
+        String name = this.filesource.getName();
         int index = name.lastIndexOf('.');
         name = name.substring(0, index) + ".hack";
-        filetarget = new File(filesource.getParent(),name);
         this.line = "";
         this.coutner=0;
-        try
-        {
-            filetarget.createNewFile();
-            this.writetagetbuffer = new FileWriter(this.filetarget);
-        }
-        catch (IOException e) 
-        {
-            System.out.println("File cant be excuted");
-        }
         
     }
 
@@ -56,7 +44,7 @@ public class Parser
             {
                 line = line.substring(0, line.indexOf("//"));
             }
-            if (line.isEmpty()) 
+            if (!line.isEmpty()) 
             {
             this.coutner++;
             return;
@@ -99,13 +87,15 @@ public class Parser
         {
             return line.substring(0,line.indexOf('='));
         }
-        return "null";
+        return "";
     }
 
     // Return the comp field of a C_COMMAND
     public String comp(){
-        if (this.instructionType()==instructioEnum.C_instruction  ) 
+        if (this.instructionType()==instructioEnum.C_instruction ) 
         {
+            if(line.contains(";"))
+                return line.substring(line.indexOf('=')+1,line.indexOf(';'));
             return line.substring(line.indexOf('=')+1);
         }
         return "";
@@ -116,23 +106,11 @@ public class Parser
     {
         if (this.instructionType()==instructioEnum.C_instruction && line.contains(";")) 
         {
-             line.substring(line.indexOf(';')+1);
-            if (line.indexOf(";")>-1)
-            {
-                line.substring(line.indexOf(';')+1,line.indexOf(";"));
-            }
             return line.substring(line.indexOf(';')+1);
         }
-        return "null";
+        return "";
     }
-     enum instructioEnum
-     {
-        A_instruction,
-        L_instruction,
-        C_instruction;
-     }
-     public FileWriter getFileWriter(){return this.writetagetbuffer;}
+    
      public String getline(){return this.line;}
      public int getcounter(){return this.coutner;}
-     public void close() throws IOException{this.writetagetbuffer.close();}
 }
