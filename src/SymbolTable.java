@@ -16,11 +16,18 @@ public class SymbolTable
         }
         hash.put("SCREEN", 16384);
         hash.put("KBD", 24575);
+        hash.put("SP", 0);
+        hash.put("LCL", 1);
+        hash.put("ARG", 2);
+        hash.put("THIS", 3);
+        hash.put("THAT", 4);
+        
+
         index = 16;
 
     }
     //add an key with spesific number
-    public void addEntry(String symbol)
+    public void addVaribale(String symbol)
     {
         if (this.contains(symbol)) 
         {
@@ -44,5 +51,9 @@ public class SymbolTable
             return -1;
         }
         return this.hash.get(symbol);
+    }
+    public void addLinstruction(String symbol,int value)
+    {
+            hash.put(symbol, value);
     }
 }
