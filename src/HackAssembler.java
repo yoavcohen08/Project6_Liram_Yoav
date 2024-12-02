@@ -1,11 +1,15 @@
-public class HackAssembler {
-    public static void main(String[] args) 
-    {
-        SymbolTable st =new SymbolTable();
-        st.addEntry("num");
-        st.addEntry("sum");
-        st.addEntry("sum1");
-       System.out.println( st.getAddress("R17"));
 
+import java.io.IOException;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+
+public class HackAssembler {
+    public static void main(String[] args) throws FileNotFoundException
+    {
+        String namefile = args[1];
+        Parser parse = new Parser(namefile);
+        
     }
 }
