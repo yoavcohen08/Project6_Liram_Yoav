@@ -8,8 +8,106 @@ import java.io.FileWriter;
 public class HackAssembler {
     public static void main(String[] args) throws FileNotFoundException
     {
-        System.out.println();
+       File filesource = new File("C:\\Users\\liram\\Desktop\\file\\Project6_Liram_Yoav\\assem for check\\Pong.asm");
+       if (!filesource.exists()) 
+       {
+            throw new FileNotFoundException("File Not Found"); 
+       }
+       Scanner readsourcefile = new Scanner((filesource));
+        String name = filesource.getName();
+        int index = name.lastIndexOf('.');
+        name = name.substring(0, index) + ".hack";
+       File filetarget = new File(filesource.getParent(),name);
+       Parser parser = new Parser(filesource);
+       SymbolTable table = new SymbolTable();
+       while (parser.hasMoreLines()) 
+       {
+            parser.advance();
+           if (parser.instructionType() == instructioEnum.L_instruction) 
+           {
+                if (!table.contains(parser.symbol())) 
+                {
+                    table.addLinstruction(parser.symbol(), parser.getcounter());
+                }
+           }         
+       }
+       
+        parser = new Parser(filesource);
+        try
+        {
+            filetarget.createNewFile();
+            try(FileWriter writetagetbuffer = new FileWriter(filetarget);)
+            {
+                boolean firstline = true;
+                while (parser.hasMoreLines()) 
+                {
+                   
+                    String curline = "";
+                    parser.advance();
+                  
+                    switch (parser.instructionType()) 
+                    {
+                        case A_instruction :
+                        {
+                        
+                            try 
+                            {
+                                int at = Integer.parseInt(parser.symbol());
+                                curline = intToBinary(at);
+                                break;
+                            } 
+                            catch (Exception e) 
+                            {
+                                if (table.contains(parser.symbol())) 
+                                {
+                                    int at = table.getAddress(parser.symbol());
+                                    curline = intToBinary(at);
+                                }
+                                else
+                                {
+                                    table.addVaribale(parser.symbol());
+                                    int at = table.getAddress(parser.symbol());
+                                    curline = intToBinary(at);
+                                }
+                                break;
+                        } 
 
+                        }               
+                        case C_instruction:
+                        {
+                            curline ="111"+ Code.comp(parser.comp())+Code.dest(parser.dest())+Code.jump(parser.jump());
+                        }
+                        case L_instruction:
+                        {
+                            break;
+                        }
+                    }
+                    if (parser.instructionType()!= instructioEnum.L_instruction) 
+                    {
+                        if (firstline) 
+                        {
+                            firstline = false;
+                        }
+                        else{writetagetbuffer.append("\n");}   
+                    }
+                    if (!curline.isEmpty()) 
+                    {
+                        writetagetbuffer.append(curline);
+                    }
+                    
+                }
+            }    
+        }
+        catch (IOException e) 
+        {
+            System.out.println("File cant be excuted");
+            
+        }
+        finally
+        {
+            readsourcefile.close();
+        }
+        
     }
     public static String intToBinary(int x)
     {

@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException
     {
-       File filesource = new File("C:\\Users\\liram\\Desktop\\file\\Project6_Liram_Yoav\\Pong.asm");
+       File filesource = new File("C:\\Users\\liram\\Desktop\\file\\Project6_Liram_Yoav\\assem for check\\Pong.asm");
        if (!filesource.exists()) 
        {
             throw new FileNotFoundException("File Not Found"); 
@@ -38,11 +38,13 @@ public class Main {
             filetarget.createNewFile();
             try(FileWriter writetagetbuffer = new FileWriter(filetarget);)
             {
-                
+                boolean firstline = true;
                 while (parser.hasMoreLines()) 
                 {
+                   
                     String curline = "";
                     parser.advance();
+                  
                     switch (parser.instructionType()) 
                     {
                         case A_instruction :
@@ -80,9 +82,17 @@ public class Main {
                             break;
                         }
                     }
+                    if (parser.instructionType()!= instructioEnum.L_instruction) 
+                    {
+                        if (firstline) 
+                        {
+                            firstline = false;
+                        }
+                        else{writetagetbuffer.append("\n");}   
+                    }
                     if (!curline.isEmpty()) 
                     {
-                        writetagetbuffer.append(curline + "\n");
+                        writetagetbuffer.append(curline);
                     }
                     
                 }
