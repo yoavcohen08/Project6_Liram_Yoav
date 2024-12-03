@@ -46,7 +46,10 @@ public class Parser
             }
             if (!line.isEmpty()) 
             {
-            this.coutner++;
+                if (this.instructionType() != instructioEnum.L_instruction ) 
+                {
+                    this.coutner++;
+                }     
             return;
             }
         }
@@ -113,4 +116,5 @@ public class Parser
     
      public String getline(){return this.line;}
      public int getcounter(){return this.coutner;}
+     public void closeScanner(){this.readsourcefile.close();}
 }

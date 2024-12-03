@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException
     {
-       File filesource = new File("C:\\Users\\liram\\Desktop\\file\\Project6_Liram_Yoav\\PongL.asm");
+       File filesource = new File("C:\\Users\\liram\\Desktop\\file\\Project6_Liram_Yoav\\Pong.asm");
        if (!filesource.exists()) 
        {
             throw new FileNotFoundException("File Not Found"); 
@@ -20,65 +20,82 @@ public class Main {
        File filetarget = new File(filesource.getParent(),name);
        Parser parser = new Parser(filesource);
        SymbolTable table = new SymbolTable();
-        
+       while (parser.hasMoreLines()) 
+       {
+            parser.advance();
+           if (parser.instructionType() == instructioEnum.L_instruction) 
+           {
+                if (!table.contains(parser.symbol())) 
+                {
+                    table.addLinstruction(parser.symbol(), parser.getcounter());
+                }
+           }         
+       }
+       
+        parser = new Parser(filesource);
         try
         {
             filetarget.createNewFile();
-            FileWriter writetagetbuffer = new FileWriter(filetarget);
-            while (parser.hasMoreLines()) 
+            try(FileWriter writetagetbuffer = new FileWriter(filetarget);)
             {
-                String curline = "";
-                parser.advance();
-                switch (parser.instructionType()) 
+                
+                while (parser.hasMoreLines()) 
                 {
-                    case A_instruction :
+                    String curline = "";
+                    parser.advance();
+                    switch (parser.instructionType()) 
                     {
-                    
-                        try 
+                        case A_instruction :
                         {
-                            int at = Integer.parseInt(parser.symbol());
-                            curline = intToBinary(at);
-                            break;
+                        
+                            try 
+                            {
+                                int at = Integer.parseInt(parser.symbol());
+                                curline = intToBinary(at);
+                                break;
+                            } 
+                            catch (Exception e) 
+                            {
+                                if (table.contains(parser.symbol())) 
+                                {
+                                    int at = table.getAddress(parser.symbol());
+                                    curline = intToBinary(at);
+                                }
+                                else
+                                {
+                                    table.addVaribale(parser.symbol());
+                                    int at = table.getAddress(parser.symbol());
+                                    curline = intToBinary(at);
+                                }
+                                break;
                         } 
-                        catch (Exception e) 
-                        {
-                            if (table.contains(parser.symbol())) 
-                            {
-                                int at = table.getAddress(parser.symbol());
-                                curline = intToBinary(at);
-                            }
-                            else
-                            {
-                                table.addVaribale(parser.symbol());
-                                int at = table.getAddress(parser.symbol());
-                                curline = intToBinary(at);
-                            }
-                            break;
-                       } 
 
-                    }               
-                    case C_instruction:
-                    {
-                        curline ="111"+ Code.comp(parser.comp())+Code.dest(parser.dest())+Code.jump(parser.jump());
+                        }               
+                        case C_instruction:
+                        {
+                            curline ="111"+ Code.comp(parser.comp())+Code.dest(parser.dest())+Code.jump(parser.jump());
+                        }
+                        case L_instruction:
+                        {
+                            break;
+                        }
                     }
-                     case L_instruction:
-                     {
-                        break;
-                     }
+                    if (!curline.isEmpty()) 
+                    {
+                        writetagetbuffer.append(curline + "\n");
+                    }
+                    
                 }
-                writetagetbuffer.append(curline + "\n");
-            }
-            writetagetbuffer.close();
-            
+            }    
         }
         catch (IOException e) 
         {
             System.out.println("File cant be excuted");
+            
         }
         finally
         {
             readsourcefile.close();
-            
         }
         
     }
