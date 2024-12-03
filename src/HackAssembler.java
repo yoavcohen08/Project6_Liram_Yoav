@@ -6,9 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 
 public class HackAssembler {
-    public static void main(String[] args) throws FileNotFoundException
+    public static void main(String[] args) throws FileNotFoundException,Exception
     {
-       File filesource = new File("C:\\Users\\liram\\Desktop\\file\\Project6_Liram_Yoav\\assem for check\\Pong.asm");
+        if (args.length!=1) 
+        {
+           throw new Exception("not valid data type");
+        }
+       File filesource = new File(args[0]);
        if (!filesource.exists()) 
        {
             throw new FileNotFoundException("File Not Found"); 
